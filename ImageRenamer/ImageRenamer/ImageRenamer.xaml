@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local ="clr-namespace:ImageTools.ImageRenamer"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300">
+      d:DesignHeight="293.088" d:DesignWidth="523.963">
     <UserControl.Resources>
         <Style TargetType="ListViewItem" x:Key="lisViewStyle">
             <Style.Triggers>
@@ -26,8 +26,8 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal" Height="30px">
-                <TextBox Width="170" VerticalAlignment="Center" Name="initFolder" Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
-                <Button Name="selectFolder" Margin="10px 0 0 0" Padding="10px 0" Click="selectFolder_Click">...</Button>
+                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" Name="initFolder" Text="{Binding Path=InitDir, Mode=TwoWay}" Margin="0,6" ></TextBox>
+                <Button Name="selectFolder" VerticalAlignment="Center" Margin="10px 0 0 0" Padding="10px 0" Click="selectFolder_Click">...</Button>
             </StackPanel>
             <CheckBox Name="useSubFolders" Height="15px" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}">Include subfolders</CheckBox>
         </StackPanel>
@@ -35,11 +35,11 @@
             <ListView.ItemTemplate >
                 <DataTemplate DataType="local:ImageRenameConfig">
                     <ListViewItem Style="{StaticResource ResourceKey=lisViewStyle}">
-                        <TextBlock Text="{Binding Path=OldDisplayValue}" />
-                    </ListViewItem>    
+                        <Label Content="{Binding Path=OldDisplayValue}" />
+                    </ListViewItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            
+
         </ListView>
         <StackPanel Grid.Column="1" Grid.Row="0">
             <Button Margin="5px" VerticalAlignment="Stretch">Hello</Button>
