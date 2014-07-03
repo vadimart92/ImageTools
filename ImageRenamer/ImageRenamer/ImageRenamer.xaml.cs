@@ -47,9 +47,12 @@ namespace ImageTools.ImageRenamer {
 			} else {
 				fbd.SelectedPath = Settings.Default.InDir;
 			}
-
+			var fileExtensions = Settings.Default.ImgFilesExtensions.Split('|');
 			if (fbd.ShowDialog() == DialogResult.OK) {
-				ImageRenameUtils.GetImageRenameConfigFiles(fbd.SelectedPath, IncludeSubDirs).ForEach(fc => _images.Add(fc));
+				_images.Clear();
+				var config = ImageRenameUtils.GetImageRenameConfigFiles(fbd.SelectedPath, IncludeSubDirs, fileExtensions);
+				config.Sort();
+				config.ForEach(fc => _images.Add(fc));
 			}
 		}
 	}

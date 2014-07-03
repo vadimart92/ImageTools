@@ -46,5 +46,17 @@ namespace ImageTools.Properties {
                 this["OutDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*.jpg|*.jpeg")]
+        public string ImgFilesExtensions {
+            get {
+                return ((string)(this["ImgFilesExtensions"]));
+            }
+            set {
+                this["ImgFilesExtensions"] = value;
+            }
+        }
     }
 }

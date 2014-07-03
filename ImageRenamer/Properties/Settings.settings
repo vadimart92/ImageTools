@@ -8,5 +8,8 @@
     <Setting Name="OutDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Public\Pictures\Sample Pictures</Value>
     </Setting>
+    <Setting Name="ImgFilesExtensions" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*.jpg|*.jpeg</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
