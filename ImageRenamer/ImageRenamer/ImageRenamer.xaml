@@ -7,42 +7,72 @@
       mc:Ignorable="d" 
       d:DesignHeight="293.088" d:DesignWidth="523.963">
     <UserControl.Resources>
-        <Style TargetType="ListViewItem" x:Key="lisViewStyle">
+        <Style TargetType="TextBlock" x:Key="FileNameStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=ExifInfoReadSuccess}" Value="false">
-                    <Setter Property = "Foreground" Value="Red"/>
+                    <Setter Property = "Background" Value="Red"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="53*" />
-            <ColumnDefinition Width="22*" />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel>
-            <StackPanel Orientation="Horizontal" Height="30px">
-                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" Name="initFolder" Text="{Binding Path=InitDir, Mode=TwoWay}" Margin="0,6" ></TextBox>
-                <Button Name="selectFolder" VerticalAlignment="Center" Margin="10px 0 0 0" Padding="10px 0" Click="selectFolder_Click">...</Button>
+            <StackPanel Orientation="Horizontal" Height="30pt">
+                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" Name="InitFolder" Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
+                <Button Name="selectFolder" VerticalAlignment="Center" Margin="10pt 0 0 0" Padding="10pt 0" Click="selectFolder_Click">...</Button>
             </StackPanel>
-            <CheckBox Name="useSubFolders" Height="15px" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}">Include subfolders</CheckBox>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Name="UseSubFolders" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}" Height="15pt">Include subfolders</CheckBox>
+            </StackPanel>
         </StackPanel>
-        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Name="lv_files" Margin="0 10px 0 0">
-            <ListView.ItemTemplate >
-                <DataTemplate DataType="local:ImageRenameConfig">
-                    <ListViewItem Style="{StaticResource ResourceKey=lisViewStyle}">
-                        <Label Content="{Binding Path=OldDisplayValue}" />
-                    </ListViewItem>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
+        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Name="lv_files">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="150pt" Header="OldName" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:ImageRenameConfig">
+                                <TextBlock Text="{Binding Path=OldDisplayValue, Mode=OneWay}" 
+                                   Style="{StaticResource ResourceKey=FileNameStyle}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150pt" Header="NewName" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:ImageRenameConfig">
+                                <TextBlock Text="{Binding Path=NewFileName, Mode=TwoWay}"   />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="50pt" Header="IsOk" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:ImageRenameConfig">
+                                <CheckBox IsChecked="{Binding Path=ExifInfoReadSuccess, Mode=OneWay}" 
+                                  IsEnabled="False"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
         </ListView>
-        <StackPanel Grid.Column="1" Grid.Row="0">
-            <Button Margin="5px" VerticalAlignment="Stretch">Hello</Button>
+        <StackPanel Grid.Row="0" Margin="2,0,0,0" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" Height="30pt">
+                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" 
+                         Name="destFolder"
+                         IsEnabled="{Binding ElementName=UseSubFolders, Path=IsChecked, Mode=TwoWay}"
+                         Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
+                <Button Name="SelectDestFolder" VerticalAlignment="Center" Margin="10pt 0 0 0" Padding="10pt 0" Click="SelectDestFolder_Click">...</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Name="saveToSameFolder" IsChecked="{Binding Path=SaveToSameFolder, Mode=TwoWay}" Height="15pt">Save to same folder</CheckBox>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
