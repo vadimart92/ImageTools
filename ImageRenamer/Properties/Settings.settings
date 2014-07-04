@@ -11,5 +11,11 @@
     <Setting Name="ImgFilesExtensions" Type="System.String" Scope="User">
       <Value Profile="(Default)">*.jpg|*.jpeg</Value>
     </Setting>
+    <Setting Name="UseSubDirs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SaveToSameFolder" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

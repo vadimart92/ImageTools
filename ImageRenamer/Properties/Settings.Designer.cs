@@ -58,5 +58,29 @@ namespace ImageTools.Properties {
                 this["ImgFilesExtensions"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseSubDirs {
+            get {
+                return ((bool)(this["UseSubDirs"]));
+            }
+            set {
+                this["UseSubDirs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveToSameFolder {
+            get {
+                return ((bool)(this["SaveToSameFolder"]));
+            }
+            set {
+                this["SaveToSameFolder"] = value;
+            }
+        }
     }
 }

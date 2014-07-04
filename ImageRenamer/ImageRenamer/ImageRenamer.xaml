@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local ="clr-namespace:ImageTools.ImageRenamer"
       mc:Ignorable="d" 
-      d:DesignHeight="293.088" d:DesignWidth="523.963">
+      d:DesignHeight="292.085" d:DesignWidth="643.371">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="FileNameStyle">
             <Style.Triggers>
@@ -14,11 +14,13 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <local:BollValueInverter x:Key="boolInverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,16 +28,25 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal" Height="30pt">
-                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" Name="InitFolder" Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
+                <TextBox Width="Auto" MinWidth="100pt" MaxWidth="200pt" VerticalAlignment="Center" 
+                         Name="InitFolder" 
+                         Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
                 <Button Name="selectFolder" VerticalAlignment="Center" Margin="10pt 0 0 0" Padding="10pt 0" Click="selectFolder_Click">...</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <CheckBox Name="UseSubFolders" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}" Height="15pt">Include subfolders</CheckBox>
             </StackPanel>
         </StackPanel>
-        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Name="lv_files">
+        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Name="lv_files">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Width="20pt" Header="Img" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:ImageRenameConfig">
+                                <Image ></Image>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Width="150pt" Header="OldName" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="local:ImageRenameConfig">
@@ -62,17 +73,27 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel Grid.Row="0" Margin="2,0,0,0" Grid.Column="1">
+        <StackPanel Grid.Row="0" Margin="2,0,0,0" Grid.Column="2">
             <StackPanel Orientation="Horizontal" Height="30pt">
-                <TextBox Width="Auto" MinWidth="100pt" VerticalAlignment="Center" 
+                <TextBox Width="Auto" MinWidth="100pt" MaxWidth="200pt" VerticalAlignment="Center" 
                          Name="destFolder"
-                         IsEnabled="{Binding ElementName=UseSubFolders, Path=IsChecked, Mode=TwoWay}"
+                         IsEnabled="{Binding ElementName=saveToSameFolder, Path=IsChecked, Converter={StaticResource ResourceKey=boolInverter}}"
                          Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
                 <Button Name="SelectDestFolder" VerticalAlignment="Center" Margin="10pt 0 0 0" Padding="10pt 0" Click="SelectDestFolder_Click">...</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <CheckBox Name="saveToSameFolder" IsChecked="{Binding Path=SaveToSameFolder, Mode=TwoWay}" Height="15pt">Save to same folder</CheckBox>
             </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="100pt">
+            <TextBlock Text="Order by:" HorizontalAlignment="Center"/>
+            <ComboBox Name="orderByComboBox">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="local:ExifTagInfo">
+                        <TextBlock Text="{Binding Path=Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </StackPanel>
     </Grid>
 </UserControl>

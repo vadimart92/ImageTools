@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using LevDan.Exif;
 
 namespace ImageTools.ImageRenamer {
@@ -30,12 +31,54 @@ namespace ImageTools.ImageRenamer {
 			return result;
 		}
 
+		public static List<ExifTagInfo> GetExifTagInfos(IEnumerable<ImageRenameConfig> imagesConfig) {
+			var allTags = (from config in imagesConfig
+						  from tag in config.ExifTags
+						  select new ExifTagInfo {Name = tag.FieldName, TagNumber = tag.Id});
+			var result = new Dictionary<int,ExifTagInfo>();
+			foreach (var t in allTags) {
+				if (!result.ContainsKey(t.TagNumber)) {
+					result.Add(t.TagNumber, t);
+				}
+			}
+			return result.Values.ToList();
+		}
+	}
+	public class ExifTagInfo : IComparable<ExifTagInfo>, IEquatable<ExifTagInfo> {
+		public string Name {
+			get;
+			set;
+		}
+		public int TagNumber {
+			get;
+			set;
+		}
+
+		#region Члены IComparable<ExifTagInfo>
+
+		public int CompareTo(ExifTagInfo other) {
+			return TagNumber.CompareTo(other.TagNumber);
+		}
+
+		#endregion
+
+		#region Члены IEquatable<ExifTagInfo>
+
+		public bool Equals(ExifTagInfo other) {
+			return TagNumber == other.TagNumber;
+		}
+
+		#endregion
 	}
 	public class ImageRenameConfig : IComparable<ImageRenameConfig>,INotifyPropertyChanged {
 		public string OldDisplayValue {
 			get {
 				return _fileNameOnly;
 			}
+		}
+
+		public ExifTagCollection ExifTags {
+			get { return _fileInfo; }
 		}
 
 		public string NewFileName {
@@ -45,7 +88,6 @@ namespace ImageTools.ImageRenamer {
 					_newFilename = value;
 					PropertyChanged(this, GetArgs());
 				}
-				
 			}
 		}
 
