@@ -76,6 +76,14 @@ namespace ImageTools.ImageRenamer {
 				return _fileNameOnly;
 			}
 		}
+		public string CurrentSortingTagValue {
+			get;
+			set;
+		}
+
+		public string OldFileFullName {
+			get { return _oldName; }
+		}
 
 		public ExifTagCollection ExifTags {
 			get { return _fileInfo; }
@@ -84,9 +92,13 @@ namespace ImageTools.ImageRenamer {
 		public string NewFileName {
 			get { return _newFilename; }
 			set {
-				if (!value.Equals(_newFilename)) {
+				if (!string.Equals(_newFilename,value,StringComparison.OrdinalIgnoreCase)) {
 					_newFilename = value;
-					PropertyChanged(this, GetArgs());
+					if (PropertyChanged != null) {
+						lock (this) {
+							PropertyChanged(this, GetArgs());
+						}
+					}
 				}
 			}
 		}
@@ -127,7 +139,7 @@ namespace ImageTools.ImageRenamer {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private PropertyChangedEventArgs GetArgs([CallerMemberName]string propertyName = null) {
-			return new PropertyChangedEventArgs(propertyName);
+			return new PropertyChangedEventArgs(propertyName ?? string.Empty);
 		}
 
 		#endregion

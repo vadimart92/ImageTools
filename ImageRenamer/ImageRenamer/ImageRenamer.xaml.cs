@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -97,6 +99,39 @@ namespace ImageTools.ImageRenamer {
 			foreach (ImageRenameConfig image in _images) {
 				image.NewFileName = DateTime.Now.ToLongTimeString();
 			}
+		}
+
+		private async void orderByComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+			var exifProperty = e.AddedItems.OfType<ExifTagInfo>().FirstOrDefault();
+			if (exifProperty == null) {
+				return;
+			}
+			var tagNumber = exifProperty.TagNumber;
+			var images = _images.ToList();
+			await Task.Run(() => {
+				Comparison<ImageRenameConfig> comparsion = (conf1, conf2) => {
+					var tagInfo1 = conf1.ExifTags.SingleOrDefault(t => t.Id == tagNumber);
+					var tagInfo2 = conf2.ExifTags.SingleOrDefault(t => t.Id == tagNumber);
+					//TODO: realize
+					try {
+						return tagInfo1.Value.CompareTo(tagInfo2.Value);
+					}
+					catch (Exception) {
+						return 0;
+					}
+				};
+				images.Sort(comparsion);
+				var format = "D" + images.Count.ToString().Length;
+				for (int i = 0; i < images.Count; i++) {
+					var img = images[i];
+					var tagInfo = img.ExifTags.SingleOrDefault(t => t.Id == tagNumber);
+					img.CurrentSortingTagValue = (tagInfo == null)? "<not set>" : tagInfo.Value;
+					var fi = new FileInfo(img.OldFileFullName);
+					img.NewFileName = i.ToString(format) + fi.Extension;
+				}
+			});
+			_images.Clear();
+			images.ForEach(i => _images.Add(i));
 		}
 	}
 	public class BollValueInverter : IValueConverter {

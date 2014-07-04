@@ -62,6 +62,14 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn Width="100pt" Header="SortingValue" >
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="local:ImageRenameConfig">
+                                <TextBlock Text="{Binding Path=CurrentSortingTagValue, Mode=OneWay}" 
+                                  IsEnabled="False"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Width="50pt" Header="IsOk" >
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="local:ImageRenameConfig">
@@ -87,7 +95,7 @@
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" MinWidth="100pt">
             <TextBlock Text="Order by:" HorizontalAlignment="Center"/>
-            <ComboBox Name="orderByComboBox">
+            <ComboBox Name="orderByComboBox" SelectionChanged="orderByComboBox_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate DataType="local:ExifTagInfo">
                         <TextBlock Text="{Binding Path=Name}"/>
