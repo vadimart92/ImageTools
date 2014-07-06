@@ -8,6 +8,10 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms;
 using ImageTools.Properties;
+using System.Windows.Media.Imaging;
+using System.Windows.Input;
+using System.Drawing;
+using System.Windows.Media;
 
 namespace ImageTools.ImageRenamer {
 	/// <summary>
@@ -75,7 +79,7 @@ namespace ImageTools.ImageRenamer {
 				fbd.SelectedPath = Settings.Default.InDir;
 			}
 			var fileExtensions = Settings.Default.ImgFilesExtensions.Split('|');
-			if (fbd.ShowDialog() == DialogResult.OK) {
+			if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl) || fbd.ShowDialog() == DialogResult.OK) {
 				InitDir = fbd.SelectedPath;
 				var cont = selectFolder.Content;
 				selectFolder.Content = "Loading...";
@@ -127,14 +131,45 @@ namespace ImageTools.ImageRenamer {
 					var tagInfo = img.ExifTags.SingleOrDefault(t => t.Id == tagNumber);
 					img.CurrentSortingTagValue = (tagInfo == null)? "<not set>" : tagInfo.Value;
 					var fi = new FileInfo(img.OldFileFullName);
-					img.NewFileName = i.ToString(format) + fi.Extension;
+					img.NewFileName = "DSC_"+(i+1).ToString(format) + fi.Extension;
 				}
 			});
 			_images.Clear();
 			images.ForEach(i => _images.Add(i));
 		}
+
+		private async void lv_files_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+			var selectedImage = e.AddedItems.OfType<ImageRenameConfig>().FirstOrDefault();
+			if (selectedImage == null)
+				return;
+			if (File.Exists(selectedImage.OldFileFullName)) {
+				var img = await Task.Run(() => {
+					var bmp = ImageTools.Utils.GetBitmapImage(selectedImage.OldFileFullName, (i) => {
+						return new Bitmap(i, new System.Drawing.Size(i.Width / 100 * 30, i.Height / 100 * 30));
+					});
+					bmp.Freeze();
+					return bmp;
+				});
+				renameControl.Background = new ImageBrush(img);
+			}
+		}
+
+		private async void export_Click(object sender, RoutedEventArgs e) {
+			if (SaveToSameFolder) {
+				if (_images.Any(i => !string.IsNullOrWhiteSpace(i.NewFileName))) {
+					var dir = Path.Combine(Settings.Default.InDir, "export_" + DateTime.Now.ToString("yyyy-MM-dd"));
+					if (!Directory.Exists(dir)) {
+						Directory.CreateDirectory(dir);
+					}
+					foreach (var img in _images) {
+						await Utils.CopyFilesAsync(img.OldFileFullName, Path.Combine(dir, img.NewFileName));
+					}
+				}
+			}
+		}
+		
 	}
-	public class BollValueInverter : IValueConverter {
+	public class BoolValueInverter : IValueConverter {
 
 		#region Члены IValueConverter
 
