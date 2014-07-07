@@ -64,8 +64,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ImageRenamer\ImageRenameConfig.cs" />
+    <Compile Include="ModuleMessageLayer\ModulesMessageHelper.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
+    <Page Include="ImageRenamer\EnUIDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ImageRenamer\ImageRenamer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
