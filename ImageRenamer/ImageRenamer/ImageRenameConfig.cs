@@ -5,22 +5,29 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using ImageTools.ModuleMessageLayer;
 using LevDan.Exif;
 
 namespace ImageTools.ImageRenamer {
 	class ImageRenameUtils {
-		public static List<ImageRenameConfig> GetImageRenameConfigFiles(string directory, bool recursive, IEnumerable<String> fileExtensions) {
+		public static List<ImageRenameConfig> GetImageRenameConfigFiles(string directory, bool recursive, IEnumerable<String> fileExtensions, object invoker = null) {
 			var result = new List<ImageRenameConfig>();
 			var searchOption = (recursive) ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
 			var files = from ext in fileExtensions
 						from fileName in Directory.EnumerateFiles(directory, ext, searchOption)
 						select fileName;
+			var count = files.Count();
+			var i = 0;
 			foreach (var file in files) {
 				try {
 					var ef = new ExifTagCollection(file);
 					result.Add(new ImageRenameConfig(ef, file));
+					i++;
+					ModulesMessageHelper.Messager.PostMessage(invoker, new MessageEventArgs("hello"){Parameter = i*100/count});
+					Thread.Sleep(2000);
 				} catch (ArgumentException) {
 					result.Add(new ImageRenameConfig(null, file) {
 						ExifInfoReadSuccess = false

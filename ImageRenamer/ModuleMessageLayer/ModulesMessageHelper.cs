@@ -7,10 +7,25 @@ using System.Threading.Tasks;
 namespace ImageTools.ModuleMessageLayer {
 	public class ModulesMessageHelper
 	{
+		private static ModulesMessageHelper _instanse;
+
+		static ModulesMessageHelper() {
+			_instanse = new ModulesMessageHelper();
+		}
+
+		private ModulesMessageHelper() {
+			
+		}
 		private event Action<object, object> WideMessageRecived;
 
 		private Dictionary<string, Action<object, object>> _addressMessageRecivers =
 			new Dictionary<string, Action<object, object>>();
+
+		public static ModulesMessageHelper Messager {
+			get {
+				return _instanse;
+			}
+		}
 
 		public void Subscribe(Action<object,object> handler, string mesageName = null) {
 			if (string.IsNullOrWhiteSpace(mesageName)) {
@@ -35,6 +50,7 @@ namespace ImageTools.ModuleMessageLayer {
 					break;
 				}
 				case MessageType.Wide: {
+					WideMessageRecived(sender, message.Parameter);
 					break;
 				}
 			}

@@ -20,6 +20,16 @@ namespace ImageTools {
 	public partial class MainWindow : Window {
 		public MainWindow() {
 			InitializeComponent();
+			SubscribeOnEvents();
+		}
+
+		public int Progress { get;set; }
+
+		private void SubscribeOnEvents() {
+			Progress = -1;
+			ModuleMessageLayer.ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
+				Progress = (int)arg;
+			});
 		}
 	}
 }
