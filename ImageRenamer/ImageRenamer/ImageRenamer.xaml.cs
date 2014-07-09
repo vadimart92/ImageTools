@@ -161,9 +161,7 @@ namespace ImageTools.ImageRenamer {
 					if (!Directory.Exists(dir)) {
 						Directory.CreateDirectory(dir);
 					}
-					foreach (var img in _images) {
-						await Utils.CopyFilesAsync(img.OldFileFullName, Path.Combine(dir, img.NewFileName));
-					}
+					await Utils.CopyFilesAsync(dir, _images);
 				}
 			}
 		}

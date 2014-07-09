@@ -27,7 +27,6 @@ namespace ImageTools.ImageRenamer {
 					result.Add(new ImageRenameConfig(ef, file));
 					i++;
 					ModulesMessageHelper.Messager.PostMessage(invoker, new MessageEventArgs("hello"){Parameter = i*100/count});
-					Thread.Sleep(2000);
 				} catch (ArgumentException) {
 					result.Add(new ImageRenameConfig(null, file) {
 						ExifInfoReadSuccess = false

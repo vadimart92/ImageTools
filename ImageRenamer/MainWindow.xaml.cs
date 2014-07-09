@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImageTools.ModuleMessageLayer;
 
 namespace ImageTools {
 	/// <summary>
@@ -20,15 +21,19 @@ namespace ImageTools {
 	public partial class MainWindow : Window {
 		public MainWindow() {
 			InitializeComponent();
+			InitBindings();
 			SubscribeOnEvents();
 		}
-
-		public int Progress { get;set; }
+		private void InitBindings() {
+			DataContext = new MainWindowVM();
+		}
 
 		private void SubscribeOnEvents() {
-			Progress = -1;
-			ModuleMessageLayer.ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
-				Progress = (int)arg;
+			((MainWindowVM)DataContext).Progress = -1;
+			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
+				this.Dispatcher.Invoke(() => {
+					((MainWindowVM)DataContext).Progress = (int)arg;
+				});
 			});
 		}
 	}

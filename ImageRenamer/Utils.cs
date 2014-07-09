@@ -11,6 +11,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Drawing;
+using ImageTools.ImageRenamer;
 
 namespace ImageTools {
 	public static class Utils {
@@ -43,10 +44,13 @@ namespace ImageTools {
 				await Destination.WriteAsync(buffer, 0, numRead);
 			}
 		}
-		public static async Task CopyFilesAsync(string source,string dest) {
-			await Task.Run(() => {
-				File.Copy(source, dest);
+		public static Task CopyFilesAsync(string dir, IEnumerable<ImageRenameConfig> images) {
+			return Task.Run(() => {
+				foreach (var img in images) {
+					File.Copy(img.OldFileFullName, Path.Combine(dir, img.NewFileName));
+				}
 			});
+			
 		}
 	}
 }

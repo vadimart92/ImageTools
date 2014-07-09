@@ -17,110 +17,112 @@
         </Style>
         <local:BoolValueInverter x:Key="boolInverter" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="84"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <StackPanel>
-            <StackPanel.Background>
-                <SolidColorBrush Color="White" Opacity="0.5"/>
-            </StackPanel.Background>
-            <StackPanel Orientation="Horizontal" Height="20pt" Name="sp_01">
-                <Label Margin="0 0 18pt 0">Source:</Label>
-                <Button x:Name="selectFolder" Click="selectFolder_Click"
+    <Grid Margin="5pt">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" MinHeight="84"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <StackPanel.Background>
+                    <SolidColorBrush Color="White" Opacity="0.5"/>
+                </StackPanel.Background>
+                <StackPanel Orientation="Horizontal" Height="20pt" Name="sp_01">
+                    <Label Margin="0 0 18pt 0">Source:</Label>
+                    <Button x:Name="selectFolder" Click="selectFolder_Click"
                 	VerticalAlignment="Center" Padding="10pt 0" HorizontalAlignment="Right"
                         Content="..."   />
-                <TextBox MinWidth="150pt" Width="Auto" MaxWidth="250pt" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+                    <TextBox MinWidth="150pt" Width="Auto" MaxWidth="250pt" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
                          Name="InitFolder"
                          Text="{Binding Path=InitDir, Mode=TwoWay}" Margin="0,4,0,5" ></TextBox>
 
-            </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="2">
-                <StackPanel Orientation="Horizontal" Height="20pt">
-                    <Label>Destination:</Label>
-                    <Button Name="SelectDestFolder" VerticalAlignment="Center" Padding="10pt 0" Click="SelectDestFolder_Click">...</Button>
-                    <TextBox Width="Auto" MinWidth="150pt" MaxWidth="200pt" VerticalAlignment="Center" 
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal" Height="20pt">
+                        <Label>Destination:</Label>
+                        <Button Name="SelectDestFolder" VerticalAlignment="Center" Padding="10pt 0" Click="SelectDestFolder_Click">...</Button>
+                        <TextBox Width="Auto" MinWidth="150pt" MaxWidth="200pt" VerticalAlignment="Center" 
                          Name="destFolder"
                          IsEnabled="{Binding ElementName=saveToSameFolder, Path=IsChecked, Converter={StaticResource ResourceKey=boolInverter}}"
                          Text="{Binding Path=InitDir, Mode=TwoWay}" ></TextBox>
+                    </StackPanel>
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Order by:" Margin="0 0 17pt 0"/>
+                    <ComboBox Name="orderByComboBox" SelectionChanged="orderByComboBox_SelectionChanged"
+                          MinWidth="100pt" MaxWidth="250pt" Width="Auto">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="local:ExifTagInfo">
+                                <TextBlock Text="{Binding Path=Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <Button Name="export" Click="export_Click"
+                        Margin="48pt 0">Export</Button>
+                </StackPanel>
+            </StackPanel>
+            <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Name="lv_files"
+                  SelectionChanged="lv_files_SelectionChanged" Opacity="0.75">
+                <ListView.Background>
+                    <SolidColorBrush Color="White"/>
+                </ListView.Background>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="150pt" Header="OldName" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="local:ImageRenameConfig">
+                                    <TextBlock Text="{Binding Path=OldDisplayValue, Mode=OneWay}" 
+                                   Style="{StaticResource ResourceKey=FileNameStyle}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="150pt" Header="NewName" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="local:ImageRenameConfig">
+                                    <TextBlock Text="{Binding Path=NewFileName, Mode=TwoWay}"   />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100pt" Header="SortingValue" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="local:ImageRenameConfig">
+                                    <TextBlock Text="{Binding Path=CurrentSortingTagValue, Mode=OneWay}" 
+                                  IsEnabled="False"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="50pt" Header="IsOk" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="local:ImageRenameConfig">
+                                    <CheckBox IsChecked="{Binding Path=ExifInfoReadSuccess, Mode=OneWay}" 
+                                  IsEnabled="False"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Border x:Name="img_preview" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+                <Border.Background>
+                    <SolidColorBrush Color="White" Opacity="0.5"/>
+                </Border.Background>
+            </Border>
+            <StackPanel Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Top"
+                    MinWidth="100pt" >
+                <StackPanel >
+                    <CheckBox Name="UseSubFolders" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}" 
+                          Height="15pt"  Margin="0 4pt">Include subfolders</CheckBox>
+                    <CheckBox x:Name="saveToSameFolder" IsChecked="{Binding SaveToSameFolder, Mode=TwoWay}" 
+                          Height="15pt" Content="Save to same folder"/>
                 </StackPanel>
 
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Order by:" Margin="0 0 17pt 0"/>
-                <ComboBox Name="orderByComboBox" SelectionChanged="orderByComboBox_SelectionChanged"
-                          MinWidth="100pt" MaxWidth="250pt" Width="Auto">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="local:ExifTagInfo">
-                            <TextBlock Text="{Binding Path=Name}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <Button Name="export" Click="export_Click"
-                        Margin="48pt 0">Export</Button>
-            </StackPanel>
-        </StackPanel>
-        <ListView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Name="lv_files"
-                  SelectionChanged="lv_files_SelectionChanged" Opacity="0.75">
-            <ListView.Background>
-                <SolidColorBrush Color="White"/>
-            </ListView.Background>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="150pt" Header="OldName" >
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="local:ImageRenameConfig">
-                                <TextBlock Text="{Binding Path=OldDisplayValue, Mode=OneWay}" 
-                                   Style="{StaticResource ResourceKey=FileNameStyle}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="150pt" Header="NewName" >
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="local:ImageRenameConfig">
-                                <TextBlock Text="{Binding Path=NewFileName, Mode=TwoWay}"   />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="100pt" Header="SortingValue" >
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="local:ImageRenameConfig">
-                                <TextBlock Text="{Binding Path=CurrentSortingTagValue, Mode=OneWay}" 
-                                  IsEnabled="False"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="50pt" Header="IsOk" >
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="local:ImageRenameConfig">
-                                <CheckBox IsChecked="{Binding Path=ExifInfoReadSuccess, Mode=OneWay}" 
-                                  IsEnabled="False"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Border x:Name="img_preview" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
-            <Border.Background>
-                <SolidColorBrush Color="White" Opacity="0.5"/>
-            </Border.Background>
-        </Border>
-        <StackPanel Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Top"
-                    MinWidth="100pt" >
-            <StackPanel >
-                <CheckBox Name="UseSubFolders" IsChecked="{Binding Path=IncludeSubDirs, Mode=TwoWay}" 
-                          Height="15pt"  Margin="0 4pt">Include subfolders</CheckBox>
-                <CheckBox x:Name="saveToSameFolder" IsChecked="{Binding SaveToSameFolder, Mode=TwoWay}" 
-                          Height="15pt" Content="Save to same folder"/>
-            </StackPanel>
-
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

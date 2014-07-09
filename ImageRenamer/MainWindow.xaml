@@ -9,10 +9,10 @@
             <RowDefinition />
             <RowDefinition Height="20px"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Margin="10px" >
+        <Border Grid.Row="0" >
             <imageRenamer:ImageRenamer></imageRenamer:ImageRenamer>
         </Border>
-        <StatusBar Grid.Row="1" >
+        <StatusBar Grid.Row="1" Opacity="0.7">
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Progress:</TextBlock>
                 <ProgressBar Name="_progress" Value="{Binding Path=Progress}" Width="100pt" Height="10pt" Margin="10pt 1pt 0 1pt"/>
