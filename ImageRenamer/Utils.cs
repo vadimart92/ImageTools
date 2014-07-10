@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using ImageTools.ImageRenamer;
+using System.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ImageTools {
 	public static class Utils {
@@ -51,6 +54,13 @@ namespace ImageTools {
 				}
 			});
 			
+		}
+		public static void NotifyPropertyChanged(object sender, ref PropertyChangedEventHandler handler, [CallerMemberName]string propertyName = null) {
+			PropertyChangedEventHandler handlers = null;
+			handlers = Interlocked.CompareExchange<PropertyChangedEventHandler>(ref handler, null, null);
+			if (handlers != null) {
+				handlers(sender, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

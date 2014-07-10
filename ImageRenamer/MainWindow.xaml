@@ -2,8 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:imageRenamer="clr-namespace:ImageTools.ImageRenamer"
-       
         Title="MainWindow" Height="352" Width="804">
+    <Window.Resources>
+        <BooleanToVisibilityConverter  x:Key="boolToVisConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -15,7 +17,8 @@
         <StatusBar Grid.Row="1" Opacity="0.7">
             <StackPanel Orientation="Horizontal">
                 <TextBlock>Progress:</TextBlock>
-                <ProgressBar Name="_progress" Value="{Binding Path=Progress}" Width="100pt" Height="10pt" Margin="10pt 1pt 0 1pt"/>
+                <ProgressBar Name="_progress" Value="{Binding Path=Progress}" Visibility="{Binding Path=IsProgressBarVisible, Converter={StaticResource ResourceKey=boolToVisConverter},Mode=OneWay}"
+                             Width="100pt" Height="10pt" Margin="10pt 1pt 0 1pt"/>
             </StackPanel>
         </StatusBar>
     </Grid>

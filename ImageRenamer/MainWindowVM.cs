@@ -6,10 +6,31 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ImageTools.ModuleMessageLayer;
 
 namespace ImageTools {
 	class MainWindowVM: INotifyPropertyChanged {
-		int _progress;
+		readonly MainWindow _window;
+		int _progress = -1;
+		public MainWindowVM(MainWindow window) {
+			_window = window;
+			Init();
+		}
+		void Init() {
+			SubscribeOnEvents();
+		}
+		private bool _isShowProgress;
+		public bool IsProgressBarVisible {
+			get {
+				return _isShowProgress;
+			}
+			set {
+				if (_isShowProgress != value) {
+					_isShowProgress = value;
+					Utils.NotifyPropertyChanged(this, ref PropertyChanged);
+				}
+			}
+		}
 		public int Progress {
 			get{
 				return _progress;
@@ -17,18 +38,19 @@ namespace ImageTools {
 			set {
 				if (value != _progress) {
 					_progress = value;
-					NotifyPropertyChanged();
+					Utils.NotifyPropertyChanged(this, ref PropertyChanged);
 				}
 			}
 		}
-		private void NotifyPropertyChanged([CallerMemberName]string propertyName = null) {
-			PropertyChangedEventHandler handlers = null;
-			handlers = Interlocked.CompareExchange<PropertyChangedEventHandler>(ref PropertyChanged, null, null);
-			if (handlers != null) {
-				handlers(this, new PropertyChangedEventArgs(propertyName));
-			}
+		private void SubscribeOnEvents() {
+			var UISyncContext = TaskScheduler.FromCurrentSynchronizationContext();
+			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
+				Progress = (int)arg;
+			}, GlobalConsts.UpdateProgressMsgName, syncContext: UISyncContext);
+			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
+				IsProgressBarVisible = (bool)arg; 
+			}, GlobalConsts.SetProgressBarVisibilityMsgName, syncContext: UISyncContext);
 		}
-
 		#region Члены INotifyPropertyChanged
 
 		public event PropertyChangedEventHandler PropertyChanged;

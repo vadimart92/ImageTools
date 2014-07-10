@@ -21,27 +21,57 @@ namespace ImageTools.ImageRenamer {
 						select fileName;
 			var count = files.Count();
 			var i = 0;
+			var j = 0;
+			var prevJ = 0;
+			ModulesMessageHelper.Messager.PostMessage(invoker,
+				new MessageEventArgs(GlobalConsts.SetProgressBarVisibilityMsgName, MessageType.Address) {
+					Parameter = true
+			});
 			foreach (var file in files) {
+				i++;
+				j = i * 100 / count;
+				if (j != prevJ || j == 0) {
+					prevJ = j;
+					ModulesMessageHelper.Messager.PostMessage(invoker,
+						new MessageEventArgs(GlobalConsts.UpdateProgressMsgName, MessageType.Address) {
+							Parameter = j
+						});
+				}
 				try {
 					var ef = new ExifTagCollection(file);
 					result.Add(new ImageRenameConfig(ef, file));
-					i++;
-					ModulesMessageHelper.Messager.PostMessage(invoker, new MessageEventArgs("hello"){Parameter = i*100/count});
 				} catch (ArgumentException) {
+					result.Add(new ImageRenameConfig(null, file) {
+						ExifInfoReadSuccess = false
+					});
+				} catch (NullReferenceException) {
 					result.Add(new ImageRenameConfig(null, file) {
 						ExifInfoReadSuccess = false
 					});
 				}
 
 			}
+			ModulesMessageHelper.Messager.PostMessage(invoker,
+				new MessageEventArgs(GlobalConsts.SetProgressBarVisibilityMsgName, MessageType.Address) {
+					Parameter = false
+				});
 			return result;
 		}
-
 		public static List<ExifTagInfo> GetExifTagInfos(IEnumerable<ImageRenameConfig> imagesConfig) {
 			var allTags = (from config in imagesConfig
-						  from tag in config.ExifTags
+						   where config.ExifTags != null
+						   from tag in config.ExifTags
 						  select new ExifTagInfo {Name = tag.FieldName, TagNumber = tag.Id});
 			var result = new Dictionary<int,ExifTagInfo>();
+			bool any;
+			try {
+				any = allTags.Any();
+			} catch (NullReferenceException) {
+				return result.Values.ToList();
+			}
+			if (!any) {
+				return result.Values.ToList();
+			}
 			foreach (var t in allTags) {
 				if (!result.ContainsKey(t.TagNumber)) {
 					result.Add(t.TagNumber, t);

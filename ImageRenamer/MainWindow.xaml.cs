@@ -22,19 +22,10 @@ namespace ImageTools {
 		public MainWindow() {
 			InitializeComponent();
 			InitBindings();
-			SubscribeOnEvents();
 		}
 		private void InitBindings() {
-			DataContext = new MainWindowVM();
+			DataContext = new MainWindowVM(this);
 		}
 
-		private void SubscribeOnEvents() {
-			((MainWindowVM)DataContext).Progress = -1;
-			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
-				this.Dispatcher.Invoke(() => {
-					((MainWindowVM)DataContext).Progress = (int)arg;
-				});
-			});
-		}
 	}
 }

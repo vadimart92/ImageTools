@@ -63,7 +63,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GlobalConsts.cs" />
     <Compile Include="ImageRenamer\ImageRenameConfig.cs" />
+    <Compile Include="ImageRenamer\ImageRenamerVM.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="ModuleMessageLayer\ModulesMessageHelper.cs" />
     <Compile Include="Settings.cs" />
