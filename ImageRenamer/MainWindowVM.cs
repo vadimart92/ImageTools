@@ -46,10 +46,10 @@ namespace ImageTools {
 			var UISyncContext = TaskScheduler.FromCurrentSynchronizationContext();
 			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
 				Progress = (int)arg;
-			}, GlobalConsts.UpdateProgressMsgName, syncContext: UISyncContext);
+			}, GlobalConsts.UpdateProgressMsg, syncContext: UISyncContext);
 			ModulesMessageHelper.Messager.Subscribe((sndr, arg) => {
 				IsProgressBarVisible = (bool)arg; 
-			}, GlobalConsts.SetProgressBarVisibilityMsgName, syncContext: UISyncContext);
+			}, GlobalConsts.SetProgressBarVisibilityMsg, syncContext: UISyncContext);
 		}
 		#region Члены INotifyPropertyChanged
 

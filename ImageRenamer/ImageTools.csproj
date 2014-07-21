@@ -64,16 +64,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GlobalConsts.cs" />
+    <Compile Include="ImageRenamer\ExifTagInfo.cs" />
     <Compile Include="ImageRenamer\ImageRenameConfig.cs" />
     <Compile Include="ImageRenamer\ImageRenamerVM.cs" />
+    <Compile Include="ImageRenamer\ImageRenameUtils.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="ModuleMessageLayer\ModulesMessageHelper.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
-    <Page Include="ImageRenamer\EnUIDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ImageRenamer\ImageRenamer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

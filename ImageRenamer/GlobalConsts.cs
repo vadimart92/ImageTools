@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageTools {
 	internal static class GlobalConsts {
-		public const string UpdateProgressMsgName = "UpdateProgress";
-		public const string SetProgressBarVisibilityMsgName = "ChangeProgressBarVisibility";
+		public const string UpdateProgressMsg = "UpdateProgress";
+		public const string SetProgressBarVisibilityMsg = "ChangeProgressBarVisibility";
 	}
 }

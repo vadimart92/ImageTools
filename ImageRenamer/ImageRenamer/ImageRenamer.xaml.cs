@@ -22,10 +22,10 @@ namespace ImageTools.ImageRenamer {
 		ImageRenamerVM viewModel;
 		public ImageRenamer() {
 			InitializeComponent();
-			InitBindings();
+			this.Loaded += InitBindings;
 		}
 
-		private void InitBindings() {
+		private void InitBindings(object sender, EventArgs e) {
 			viewModel = new ImageRenamerVM(this);
 			DataContext = viewModel;
 			lv_files.DataContext = viewModel;

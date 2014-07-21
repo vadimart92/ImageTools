@@ -94,10 +94,13 @@ namespace ImageTools.ImageRenamer {
 			var fileExtensions = Settings.Default.ImgFilesExtensions.Split('|');
 			if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl) || fbd.ShowDialog() == DialogResult.OK) {
 				InitDir = fbd.SelectedPath;
-				
+				var path = fbd.SelectedPath;
+				if (!Directory.Exists(path)) {
+					return;
+				}
 				var infos = new List<ExifTagInfo>();
 				var config = await Task.Run(() => {
-					var c = ImageRenameUtils.GetImageRenameConfigFiles(fbd.SelectedPath, IncludeSubDirs, fileExtensions);
+					var c = ImageRenameUtils.GetImageRenameConfigFiles(path, IncludeSubDirs, fileExtensions);
 					c.Sort();
 					infos = ImageRenameUtils.GetExifTagInfos(c);
 					return c;
@@ -108,7 +111,6 @@ namespace ImageTools.ImageRenamer {
 				infos.ForEach(i => _exifTags.Add(i));
 				config.ForEach(fc => _images.Add(fc));
 			}
-
 		}
 		public async void orderByComboBox_SelectionChanged(ExifTagInfo exifProperty) {
 			if (exifProperty == null) {
